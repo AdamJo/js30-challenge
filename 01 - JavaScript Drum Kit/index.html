@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JS Drum Kit</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+  <div class="keys">
+    <div data-key="65" class="key">
+      <kbd>A</kbd>
+      <span class="sound">clap</span>
+    </div>
+    <div data-key="83" class="key">
+      <kbd>S</kbd>
+      <span class="sound">hihat</span>
+    </div>
+    <div data-key="68" class="key">
+      <kbd>D</kbd>
+      <span class="sound">kick</span>
+    </div>
+    <div data-key="70" class="key">
+      <kbd>F</kbd>
+      <span class="sound">openhat</span>
+    </div>
+    <div data-key="71" class="key">
+      <kbd>G</kbd>
+      <span class="sound">boom</span>
+    </div>
+    <div data-key="72" class="key">
+      <kbd>H</kbd>
+      <span class="sound">ride</span>
+    </div>
+    <div data-key="74" class="key">
+      <kbd>J</kbd>
+      <span class="sound">snare</span>
+    </div>
+    <div data-key="75" class="key">
+      <kbd>K</kbd>
+      <span class="sound">tom</span>
+    </div>
+    <div data-key="76" class="key">
+      <kbd>L</kbd>
+      <span class="sound">tink</span>
+    </div>
+  </div>
+
+  <audio data-key="65" src="sounds/clap.wav"></audio>
+  <audio data-key="83" src="sounds/hihat.wav"></audio>
+  <audio data-key="68" src="sounds/kick.wav"></audio>
+  <audio data-key="70" src="sounds/openhat.wav"></audio>
+  <audio data-key="71" src="sounds/boom.wav"></audio>
+  <audio data-key="72" src="sounds/ride.wav"></audio>
+  <audio data-key="74" src="sounds/snare.wav"></audio>
+  <audio data-key="75" src="sounds/tom.wav"></audio>
+  <audio data-key="76" src="sounds/tink.wav"></audio>
+
+<script>
+  // My solution:
+  // I grabbed all the keys and used the index from each one to call the audio sounds
+  // Did not follow the instructions and missed the css property change part
+  // I did not modularize the code as much.  instead of two seperate play sounds I could of just used one
+  // my way of grabbing the audio was wrong.
+  // -- Instead of grabbing the element and playing it I was actually creating a new instance of it each time. 
+  // What was the difference with his solution?
+  // used querySelector to grab the individual key that was pressed
+  // -- const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+  // instead of using New Audio('$$') he just reset the current time to =
+  // -- audio.currentTime = 0; // rewind to the start 
+
+  // grab the keys and audio
+  // audio has the same number of keys and in same order
+  const allKeys = document.querySelectorAll('.key');
+  const allSounds = document.querySelectorAll('audio');
+  let allKeyCodes = [];
+
+  // !from solution
+  function removeTransition(e) {
+    if (e.propertyName !== 'transform') return; // skip it if it's not a transform
+    this.classList.remove('playing');
+  }
+
+
+  // play sound when clicked
+  allKeys.forEach((key, index) => {
+    allKeyCodes.push(key.dataset.key)
+
+    // !from solution
+    // transitionend fires when a css transitioned has ended
+    // https://developer.mozilla.org/en-US/docs/Web/Events/transitionend
+    key.addEventListener('transitionend', removeTransition)
+
+    key.addEventListener("click", (event) => {
+      let audio = new Audio(allSounds[index].src);
+      audio.play();
+      key.classList.add('playing');
+      allKeys[index].classList.add('playing');
+    });
+  })
+
+  // play sound when typed
+  window.addEventListener('keydown', event => {
+    let keySound = allKeyCodes.indexOf(event.keyCode.toString());
+    if (keySound !== -1) {
+      let audio = new Audio(allSounds[keySound].src);
+      audio.play();
+      allKeys[keySound].classList.add('playing');
+    }
+  })
+</script>
+
+
+</body>
+</html>
