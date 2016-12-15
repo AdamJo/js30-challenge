@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Key Detection</title>
+  <script type="text/javascript" src="http://www.cornify.com/js/cornify.js"></script>
+</head>
+<body>
+<script>
+  var code = []
+  // my solution: instead of splicing the array I would shift and push elements
+  // used same one to compare
+  function konomiCode(e) {
+    codeKey = [38, 40, 37, 39, 66, 65]
+    solution = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+
+    // up up down down left right left right b a
+    // up 38 
+    // down 40
+    // left 37
+    // right 39
+    // b 66
+    // a 65
+    if (codeKey.includes(e.keyCode)) {
+      if (code.length > solution.length) {
+        code.shift();
+        code.push(e.keyCode);
+      } else {
+        code.push(e.keyCode);
+      }
+      if (code.join('') === solution.join('')) {
+        console.log('winner');
+      }
+    }
+  }
+
+  window.addEventListener('keyup', konomiCode) 
+</script>
+</body>
+</html>

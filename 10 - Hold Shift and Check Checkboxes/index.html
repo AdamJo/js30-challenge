@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+  <style>
+
+    html {
+      font-family: sans-serif;
+      background:#ffc600;
+    }
+
+    .inbox {
+      max-width:400px;
+      margin:50px auto;
+      background:white;
+      border-radius:5px;
+      box-shadow:10px 10px 0 rgba(0,0,0,0.1);
+    }
+
+    .item {
+      display:flex;
+      align-items:center;
+      border-bottom: 1px solid #F1F1F1;
+    }
+
+    .item:last-child {
+      border-bottom:0;
+    }
+
+
+    input:checked + p {
+      background:#F9F9F9;
+      text-decoration: line-through;
+    }
+
+    input[type="checkbox"] {
+      margin:20px;
+    }
+
+    p {
+      margin:0;
+      padding:20px;
+      transition:background 0.2s;
+      flex:1;
+      font-family:'helvetica neue';
+      font-size: 20px;
+      font-weight: 200;
+      border-left: 1px solid #D1E2FF;
+    }
+
+    .details {
+      text-align: center;
+      font-size: 15px;
+    }
+
+
+  </style>
+   <!--
+   The following is a common layout you would see in an email client.
+
+   When a user clicks a checkbox, holds Shift, and then clicks another checkbox a few rows down, all the checkboxes inbetween those two checkboxes should be checked.
+
+  -->
+  <div class="inbox">
+    <div class="item">
+      <input data-order=0 type="checkbox">
+      <p>This is an inbox layout.</p>
+    </div>
+    <div class="item">
+      <input data-order=1 type="checkbox">
+      <p>Check one item</p>
+    </div>
+    <div class="item">
+      <input data-order=2 type="checkbox">
+      <p>Hold down your Shift key</p>
+    </div>
+    <div class="item">
+      <input data-order=3 type="checkbox">
+      <p>Check a lower item</p>
+    </div>
+    <div class="item">
+      <input data-order=4 type="checkbox">
+      <p>Everything inbetween should also be set to checked</p>
+    </div>
+    <div class="item">
+      <input data-order=5 type="checkbox">
+      <p>Try do it with out any libraries</p>
+    </div>
+    <div class="item">
+      <input data-order=6 type="checkbox">
+      <p>Just regular JavaScript</p>
+    </div>
+    <div class="item">
+      <input data-order=7 type="checkbox">
+      <p>Good Luck!</p>
+    </div>
+    <div class="item">
+      <input data-order=8 type="checkbox">
+      <p>Don't forget to tweet your result!</p>
+    </div>
+  </div>
+
+
+  <script>
+    // my solution: completed alhtough overcomplicated due to my lack of knowledge on the DOM apis
+    // his solution just used the click eventListener, also using the event.shiftKey object would eliminate 2 of my functions and 3 of my eventListeners 
+    const checkBoxArea = document.querySelector('body');
+    const inputs = document.querySelectorAll('input');
+    const checkBoxAreaArray = Array.apply(null, inputs);
+    let multiActive
+    let lastCheckBox;
+    let holdCheckBox;
+
+    function shiftSelect(e) {
+      if (e.keyCode !== 16) return;
+
+      holdCheckBox = lastCheckBox;
+      multiActive = true;
+    }
+
+    function shiftDeSelect(e) {
+      if (e.keyCode !== 16) return;
+      multiActive = false;
+    }
+
+    function newChange(e) {
+      console.log(e.shiftKey);
+      lastCheckBox = e.target.dataset.order
+      if (multiActive === true) {
+        if (holdCheckBox < lastCheckBox) {
+          
+          checkBoxAreaArray.slice(holdCheckBox, parseInt(lastCheckBox)+1).forEach(data => {
+            data.checked = true;
+          })
+        }
+        if (holdCheckBox > lastCheckBox) {
+          checkBoxAreaArray.slice(lastCheckBox, parseInt(holdCheckBox)+1).forEach(data => {
+            data.checked = true;
+          })
+        }
+      }
+    }
+
+    checkBoxArea.addEventListener('keydown', shiftSelect)
+    checkBoxArea.addEventListener('keyup', shiftDeSelect)
+
+    checkBoxArea.addEventListener('click', newChange)
+    
+    // his solution uses click, click is still called even when using keyboard
+    inputs.forEach(input => {
+      input.addEventListener('change', (data) => {
+        lastCheckBox = data.target.dataset.order
+      })
+    })
+    
+  </script>
+</body>
+</html>
